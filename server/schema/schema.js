@@ -7,5 +7,14 @@ export const typeDefs = `#graphql
     }
     type Query {
         projects:[Project]
+        project(id:ID!):Project
+    }
+    type Mutation {
+        addProject(project: AddProjectInput!):Project
+    }
+    input AddProjectInput {
+        title:String!
+        description: String!
+        tech:[String]
     }
 `;
