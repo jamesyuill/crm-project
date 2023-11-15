@@ -170,3 +170,36 @@ describe('Tests DeleteProjectById', () => {
     expect(searchResult).toEqual(-1);
   });
 });
+
+describe('Tests UpdateProjectById', () => {
+  test('returns an updated project object', async () => {
+    const response = await testServer.executeOperation({
+      query: `
+      mutation UpdateProjectById($id:ID!, $edits:EditProjectInput!){
+        updateProject(id:$id, edits:$edits){
+          id,
+          title,
+          description,
+          tech,
+        }
+      }
+      `,
+      variables: {
+        edits: {
+          title: 'The Biscuit App',
+          description: 'more about biscuits',
+        },
+        id: '4',
+      },
+    });
+    const updatedProject = response.body.singleResult.data.updateProject;
+    expect(typeof updatedProject).toBe('object');
+    expect(updatedProject).toHaveProperty('id', expect.any(String));
+
+    expect(updatedProject).toHaveProperty('title', expect.any(String));
+    expect(updatedProject).toHaveProperty('description', expect.any(String));
+    expect(updatedProject).toHaveProperty('tech', expect.any(Object));
+    expect(updatedProject.title).toEqual('The Biscuit App');
+    expect(updatedProject.description).toEqual('more about biscuits');
+  });
+});

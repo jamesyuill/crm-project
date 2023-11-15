@@ -12,10 +12,16 @@ export const typeDefs = `#graphql
     type Mutation {
         addProject(project: AddProjectInput!):Project
         deleteProject(id:ID!):[Project]
+        updateProject(id:ID!, edits:EditProjectInput!):Project
     }
     input AddProjectInput {
         title:String!
         description: String!
+        tech:[String]
+    }
+    input EditProjectInput {
+        title:String
+        description:String
         tech:[String]
     }
 `;
