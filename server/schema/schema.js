@@ -11,6 +11,7 @@ export const typeDefs = `#graphql
     }
     type Mutation {
         addProject(project: AddProjectInput!):Project
+        deleteProject(id:ID!):[Project]
     }
     input AddProjectInput {
         title:String!

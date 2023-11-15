@@ -18,5 +18,8 @@ export const resolvers = {
       db.projects.push(newProject);
       return newProject;
     },
+    deleteProject(_, args) {
+      return db.projects.filter((project) => project.id !== args.id);
+    },
   },
 };

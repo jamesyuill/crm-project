@@ -4,15 +4,11 @@ import { resolvers } from '../server/resolvers/resolvers.js';
 
 let testServer;
 
-beforeAll(() => {
+beforeEach(() => {
   testServer = new ApolloServer({
     typeDefs,
     resolvers,
   });
-});
-
-afterAll(() => {
-  testServer.stop();
 });
 
 describe('Tests GetAllProjects Endpoint', () => {
@@ -108,12 +104,10 @@ describe('Tests AddProject', () => {
       query: `
       mutation AddProject($project: AddProjectInput!){
         addProject(project:$project){
-          
             id,
             title,
             description,
             tech,
-        
         }
       }`,
       variables: {
@@ -130,5 +124,49 @@ describe('Tests AddProject', () => {
     expect(project.title).toEqual('Trello App');
     expect(project.description).toEqual('a trello style app');
     expect(project.tech[0]).toEqual('trello');
+  });
+});
+
+describe('Tests DeleteProjectById', () => {
+  test('should return an array of projects', async () => {
+    const response = await testServer.executeOperation({
+      query: `
+      mutation DeleteProjectById($id:ID!){
+        deleteProject(id:$id){
+           id,
+           title,
+           description,
+           tech,
+          }
+        }
+      `,
+      variables: {
+        id: '3',
+      },
+    });
+    const projects = response.body.singleResult.data.deleteProject;
+    expect(Array.isArray(projects)).toBe(true);
+    expect(projects).toHaveLength(6);
+  });
+  test('should return an array of projects', async () => {
+    const response = await testServer.executeOperation({
+      query: `
+      mutation DeleteProjectById($id:ID!){
+        deleteProject(id:$id){
+           id,
+           title,
+           description,
+           tech,
+          }
+        }
+      `,
+      variables: {
+        id: '1',
+      },
+    });
+    const projects = response.body.singleResult.data.deleteProject;
+
+    const searchResult = projects.findIndex((project) => project.id === '1');
+    expect(searchResult).toEqual(-1);
   });
 });
